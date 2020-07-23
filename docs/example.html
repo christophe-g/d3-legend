@@ -70,15 +70,45 @@ svg {
   </svg>
 </body>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> -->
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="../d3-legend.js"></script>
-<script>
-var thresholdScale = d3.scaleThreshold()
+<!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+<!-- import other required components -->
+<script type="importmap">
+  {
+      "imports": {
+        "d3-array": "/web_modules/d3-array.js",
+        "d3-selection": "/web_modules/d3-selection.js",
+        "d3-dispatch": "/web_modules/d3-dispatch.js",
+        "d3-shape": "/web_modules/d3-shape.js",
+        "d3-transition": "/web_modules/d3-transition.js",
+        "d3-format": "/web_modules/d3-format.js",
+        "d3-time-format": "/web_modules/d3-time-format.js",
+        "d3-random": "/web_modules/d3-random.js",
+        "d3-scale": "/web_modules/d3-scale.js",
+        "d3-time": "/web_modules/d3-time.js",
+        "d3-scale-chromatic": "/web_modules/d3-scale-chromatic.js",
+        "d3-svg-legend": "/web_modules/d3-svg-legend.js",
+        "d3-zoom": "/web_modules/d3-zoom.js",
+        "api-viewer-element": "/web_modules/api-viewer-element.js"
+    }
+  }
+  </script>
+<!-- <script src="../d3-legend.js"></script> -->
+<script type="module">
+
+import { legendColor } from '../index.js';
+import { select } from "d3-selection";
+import { scaleThreshold, scaleLinear } from 'd3-scale';
+import { range } from 'd3-array';
+import { format } from 'd3-format';
+import 'd3-transition';
+// import {  } from 'd3-format';
+
+var thresholdScale = scaleThreshold()
   .domain([0, 1000, 2500, 5000, 10000])
-  .range(d3.range(6)
+  .range(range(6)
     .map(function(i) { return "q" + i + "-9" }));
 
-var linear = d3.scaleLinear()
+var linear = scaleLinear()
   .domain([0, 10])
   .range(["rgb(46, 73, 123)", "rgb(71, 187, 94)"]);
 
@@ -129,15 +159,15 @@ const helper = function({
   return generatedLabels[i];
 };
 
-const legend = d3.legendColor()
-  .labelFormat(d3.format('.2f'))
+const legend = legendColor()
+  .labelFormat(format('.2f'))
   .title('Sync labels')
   .labels(helper)
   .useClass(true)
   .scale(thresholdScale);
 
-const promiseLegend = d3.legendColor()
-  .labelFormat(d3.format('.2f'))
+const promiseLegend = legendColor()
+  .labelFormat(format('.2f'))
   .title('Async labels (Promise)')
   .labels(promiseHelper)
   .useClass(true)
@@ -145,11 +175,22 @@ const promiseLegend = d3.legendColor()
 
 
 
-d3.select('#legend .legend')
+select('#legend .legend')
   .call(legend);
 
-d3.select('#promiseLegend .legend')
+select('#promiseLegend .legend')
   .call(promiseLegend);
 
+// Note(cg): remove one scale item 
+thresholdScale
+  .domain([0, 1000, 2500, 5000])
+  .range(range(5)
+    .map(function(i) { return "q" + i + "-9" }));
+
+select('#legend .legend')
+  .call(legend);  
+
+select('#promiseLegend .legend')
+  .call(promiseLegend);
 
 </script>

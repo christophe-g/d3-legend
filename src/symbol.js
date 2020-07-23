@@ -1,4 +1,4 @@
-import helper from "./legend"
+import helper from "./legend.js"
 import { dispatch } from "d3-dispatch"
 import { scaleLinear } from "d3-scale"
 import { formatLocale, formatSpecifier } from "d3-format"
@@ -115,13 +115,16 @@ export default function symbol() {
           const height = sum(cellSize.slice(0, i))
           return `translate(0, ${height + i * shapePadding} )`
         }
-        textTrans = (d, i) => `translate( ${maxW + labelOffset},
-                ${shapeSize[i].y + shapeSize[i].height / 2 + 5})`
+        textTrans = (d, i) => { 
+          if (!shapeSize[i]) {return ''}
+          return `translate( ${maxW + labelOffset},${shapeSize[i].y + shapeSize[i].height / 2 + 5})`
+        }
       } else if (orient === "horizontal") {
         cellTrans = (d, i) => `translate( ${i * (maxW + shapePadding)},0)`
-        textTrans = (d, i) => `translate( ${shapeSize[i].width * textAlign +
-          shapeSize[i].x},
-                ${maxH + labelOffset})`
+        textTrans = (d, i) => {
+          if (!shapeSize[i]) {return ''}
+          return `translate( ${shapeSize[i].width * textAlign + shapeSize[i].x}, ${maxH + labelOffset})`
+        }
       }
 
       helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign)

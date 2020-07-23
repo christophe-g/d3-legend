@@ -170,6 +170,8 @@ export default {
         .data(resolvedLabels)
         .text(d3_identity)
 
+      text.exit().remove()
+
       if (labelWidth) {
         svg
           .selectAll(`g.${classPrefix}cell text.${classPrefix}label`)

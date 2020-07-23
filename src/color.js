@@ -1,4 +1,4 @@
-import helper from "./legend"
+import helper from "./legend.js"
 import { dispatch } from "d3-dispatch"
 import { scaleLinear } from "d3-scale"
 import { formatLocale, formatSpecifier } from "d3-format"
@@ -125,25 +125,31 @@ export default function color() {
 
       //positions cells and text
       if (orient === "vertical") {
-        const cellSize = textSize.map((d, i) =>
-          Math.max(d.height, shapeSize[i].height)
-        )
+        const cellSize = textSize.map((d, i) => {
+            if (!shapeSize[i]) {return 0}
+            return Math.max(d.height, shapeSize[i].height)
+        })
 
         cellTrans = (d, i) => {
           const height = sum(cellSize.slice(0, i))
           return `translate(0, ${height + i * shapePadding})`
         }
 
-        textTrans = (d, i) =>
-          `translate( ${shapeSize[i].width +
+        textTrans = (d, i) => {
+          if (!shapeSize[i]) {return ''}
+          return `translate( ${shapeSize[i].width +
             shapeSize[i].x +
-            labelOffset}, ${shapeSize[i].y + shapeSize[i].height / 2 + 5})`
+            labelOffset}, ${shapeSize[i].y + shapeSize[i].height / 2 + 5})`}
       } else if (orient === "horizontal") {
-        cellTrans = (d, i) =>
-          `translate(${i * (shapeSize[i].width + shapePadding)},0)`
-        textTrans = (d, i) => `translate(${shapeSize[i].width * textAlign +
-          shapeSize[i].x},
-            ${shapeSize[i].height + shapeSize[i].y + labelOffset + 8})`
+        cellTrans = (d, i) => {
+          if (!shapeSize[i]) {return ''}
+          return `translate(${i * (shapeSize[i].width + shapePadding)},0)`
+        }
+        textTrans = (d, i) => {
+          if (!shapeSize[i]) {return ''}
+          return `translate(${shapeSize[i].width * textAlign + shapeSize[i].x},
+                    ${shapeSize[i].height + shapeSize[i].y + labelOffset + 8})`
+        }
       }
 
       helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign)

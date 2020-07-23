@@ -4,7 +4,7 @@
   "description": "A legend component for d3. Given a d3.scale it can create either a color legend, size legend, or symbol legend.",
   "main": "indexRollup.js",
   "jsnext:main": "indexRollupNext.js",
-  "module": "indexRollupNext.js",
+  "module": "index.js",
   "files": [
     "src",
     "index.js",
@@ -31,6 +31,7 @@
     "babelify": "7.3.0",
     "babelrc-rollup": "3.0.0",
     "chai": "3.4.1",
+    "es-dev-server": "^1.56.1",
     "grunt": "0.4.5",
     "grunt-browserify": "3.8.0",
     "grunt-contrib-uglify": "0.9.1",
@@ -40,13 +41,15 @@
     "reify": "0.3.8",
     "rollup": "0.41.4",
     "rollup-plugin-babel": "2.6.1",
+    "snowpack": "^2.6.4",
     "stringify": "3.1.0"
   },
   "scripts": {
     "build": "rollup -c && grunt",
     "prepublish": "npm t && npm run build",
     "server": "http-server",
-    "start": "npm run server & npm run watch",
+    "start": "es-dev-server -v",
+    "snowpack": "pnpx snowpack",
     "watch": "npm-watch",
     "grunt": "grunt",
     "test": "mocha"
@@ -79,5 +82,21 @@
     "d3-scale": "1.0.3",
     "d3-selection": "1.0.2",
     "d3-transition": "1.0.3"
+  },
+  "snowpack": {
+    "exclude": [
+      "**/node_modules/*", 
+      "**/node_modules/**/*", 
+      "**/docs/**/*.@(js)",
+      "**/test/*", "**/*.@(spec|test).@(js|mjs)"
+    ],
+    "install": [
+      "d3-array",
+      "d3-dispatch",
+      "d3-format",
+      "d3-scale",
+      "d3-selection",
+      "d3-transition"
+    ]
   }
 }

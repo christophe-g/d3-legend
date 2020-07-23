@@ -1,4 +1,4 @@
-import helper from "./legend"
+import helper from "./legend.js"
 import { dispatch } from "d3-dispatch"
 import { scaleLinear } from "d3-scale"
 import { formatLocale, formatSpecifier } from "d3-format"
@@ -126,8 +126,10 @@ export default function size() {
 
       //positions cells and text
       if (orient === "vertical") {
-        const cellSize = textSize.map((d, i) =>
-          Math.max(d.height, shapeSize[i].height)
+        const cellSize = textSize.map((d, i) => {
+            if (!shapeSize[i]) { return 0 }
+            return Math.max(d.height, shapeSize[i].height)
+          }
         )
         const y =
           shape == "circle" || shape == "line" ? shapeSize[0].height / 2 : 0
@@ -137,8 +139,10 @@ export default function size() {
           return `translate(0, ${y + height + i * shapePadding})`
         }
 
-        textTrans = (d, i) => `translate( ${maxW + labelOffset},
-            ${shapeSize[i].y + shapeSize[i].height / 2 + 5})`
+        textTrans = (d, i) => {
+          if (!shapeSize[i]) {return ''}
+          return `translate( ${maxW + labelOffset}, ${shapeSize[i].y + shapeSize[i].height / 2 + 5})`
+        }
       } else if (orient === "horizontal") {
         cellTrans = (d, i) => {
           const width = sum(shapeSize.slice(0, i), d => d.width)
@@ -148,6 +152,7 @@ export default function size() {
 
         const offset = shape == "line" ? maxH / 2 : maxH
         textTrans = (d, i) => {
+          if (!shapeSize[i]) {return ''}
           return `translate( ${shapeSize[i].width * textAlign + shapeSize[i].x},
                 ${offset + labelOffset})`
         }
